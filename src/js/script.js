@@ -1,23 +1,5 @@
 // MARKUP TO ADD WHEN FETCHING DATA:
 
-// <div class="photo-card">
-//   <img src="" alt="" loading="lazy" />
-//   <div class="info">
-//     <p class="info-item">
-//       <b>Likes</b>
-//     </p>
-//     <p class="info-item">
-//       <b>Views</b>
-//     </p>
-//     <p class="info-item">
-//       <b>Comments</b>
-//     </p>
-//     <p class="info-item">
-//       <b>Downloads</b>
-//     </p>
-//   </div>
-// </div>;
-
 // PAGINATION MARKUP
 // <button type="button" class="load-more">Load more</button>
 
@@ -34,24 +16,61 @@ const galleryDiv = document.querySelector('div.gallery');
 
 async function handleFormSubmit(e) {
   e.preventDefault();
+  if (inputEl.value === '') {
+    Notify.failure('Please input a value');
+    return;
+  }
   const searchQuery = inputEl.value;
-  const SearchValue = `${BASE_URL}?key=${API_KEY}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true`;
-
   inputEl.value = '';
 
-  const res = await axios.get(SearchValue);
+  try {
+    const res = await axios.get(
+      `${BASE_URL}?key=${API_KEY}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true`
+    );
+    if (res.data.totalHits === 0) {
+      Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    } else {
+      Notify.success(`Hooray! We found ${res.data.totalHits} images.`);
+    }
 
-  console.log(SearchValue);
-  console.log(res);
-  //   const {
-  //     webformatURL,
-  //     largeImageURL,
-  //     tags,
-  //     likes,
-  //     views,
-  //     comments,
-  //     downloads,
-  //   } = res;
+    const requestedRes = res.data.hits.map(hit => {
+      return {
+        webFormat: hit.webformatURL,
+        largeImage: hit.largeImageURL,
+        tags: hit.tags,
+        likes: hit.likes,
+        views: hit.views,
+        comments: hit.comments,
+        downloads: hit.downloads,
+      };
+    });
+
+    requestedRes.forEach(data => {
+      const divEl = `<div class="photo-card">
+    <img src="${data.webFormat}" alt="" loading="lazy" />
+    <div class="info">
+      <p class="info-item">
+        <b>Likes</b>
+        ${data.likes}
+      </p>
+      <p class="info-item">
+        <b>Views</b> ${data.views}
+      </p>
+      <p class="info-item">
+        <b>Comments</b> ${data.comments}
+      </p>
+      <p class="info-item">
+        <b>Downloads</b> ${data.downloads}
+      </p>
+    </div>
+  </div>`;
+      galleryDiv.insertAdjacentHTML('beforeend', divEl);
+    });
+  } catch {
+    Notify.failure('error!' + Error);
+  }
 }
 
 formEl.addEventListener('submit', handleFormSubmit);
