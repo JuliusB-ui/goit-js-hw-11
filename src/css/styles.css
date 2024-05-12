@@ -23,25 +23,67 @@ button {
 }
 
 button {
-  width: 80px;
+  width: 120px;
   height: 30px;
   background-color: cyan;
   border: none;
   text-align: center;
 }
 button:hover {
-  background-color: darkcyan;
-  color: white;
+  background-color: whitesmoke;
+  color: gray;
   border: 1px solid black;
 }
 
 button:active,
 button:focus {
-  background-color: blue;
+  background-color: white;
 }
 
 input {
   height: 30px;
   width: 300px;
   text-align: center;
+}
+
+.gallery {
+  margin: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.photo-card {
+  border: 1px solid gray;
+  display: flex;
+  flex-direction: column;
+}
+
+.photo {
+  width: 360px;
+  height: 250px;
+}
+
+.info {
+  padding: 10px;
+}
+
+.load-more {
+  border: 2px solid gray;
+  background-color: slategray;
+  padding: 20px 0;
+  color: white;
+  display: flex;
+  margin: 30px auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.is-hidden {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
